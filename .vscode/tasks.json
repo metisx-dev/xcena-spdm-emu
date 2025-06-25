@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "setup-environment",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-c",
+                "source /home/mcpark/rt630/cmrt/sdk/sourceme-env-setup && source /home/mcpark/cmrt-zephyr-2.0.61.23/cmrt-zephyr-env.sh"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build-spdm-validator", // launch.json의 preLaunchTask와 일치해야 함
+            "type": "shell",
+            "command": "./build.sh",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}

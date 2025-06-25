@@ -41,7 +41,7 @@ common_test_case_config_t m_spdm_test_group_digests_configs[] = {
 };
 
 common_test_case_config_t m_spdm_test_group_certificate_configs[] = {
-    {SPDM_RESPONDER_TEST_CASE_CERTIFICATE_SUCCESS_10, COMMON_TEST_ACTION_RUN},
+    {SPDM_RESPONDER_TEST_CASE_CERTIFICATE_SUCCESS, COMMON_TEST_ACTION_RUN},
     {SPDM_RESPONDER_TEST_CASE_CERTIFICATE_VERSION_MISMATCH, COMMON_TEST_ACTION_RUN},
     {SPDM_RESPONDER_TEST_CASE_CERTIFICATE_UNEXPECTED_REQUEST, COMMON_TEST_ACTION_RUN},
     {SPDM_RESPONDER_TEST_CASE_CERTIFICATE_INVALID_REQUEST, COMMON_TEST_ACTION_RUN},
@@ -143,6 +143,14 @@ common_test_case_config_t m_spdm_test_group_end_session_ack_configs[] = {
     {COMMON_TEST_ID_END, COMMON_TEST_ACTION_SKIP},
 };
 
+common_test_case_config_t m_spdm_test_group_vendor_defined_rsp_configs[] = {
+    {SPDM_RESPONDER_TEST_CASE_VENDOR_DEFINED_RSP_CXL_IDE_KM_SUCCESS, COMMON_TEST_ACTION_RUN},
+    {SPDM_RESPONDER_TEST_CASE_VENDOR_DEFINED_RSP_CXL_TSP_SUCCESS, COMMON_TEST_ACTION_RUN},
+    {SPDM_RESPONDER_TEST_CASE_VENDOR_DEFINED_RSP_PCI_IDE_KM_SUCCESS, COMMON_TEST_ACTION_RUN},
+    {SPDM_RESPONDER_TEST_CASE_VENDOR_DEFINED_RSP_PCI_TDISP_SUCCESS, COMMON_TEST_ACTION_RUN},
+    {COMMON_TEST_ID_END, COMMON_TEST_ACTION_SKIP},
+};
+
 common_test_group_config_t m_spdm_test_group_configs[] = {
     {SPDM_RESPONDER_TEST_GROUP_VERSION,           COMMON_TEST_ACTION_RUN,
      m_spdm_test_group_version_configs},
@@ -168,6 +176,8 @@ common_test_group_config_t m_spdm_test_group_configs[] = {
      m_spdm_test_group_key_update_ack_configs},
     {SPDM_RESPONDER_TEST_GROUP_END_SESSION_ACK,   COMMON_TEST_ACTION_RUN,
      m_spdm_test_group_end_session_ack_configs},
+    {SPDM_RESPONDER_TEST_GROUP_VENDOR_DEFINED_RSP, COMMON_TEST_ACTION_RUN,
+     m_spdm_test_group_vendor_defined_rsp_configs},
     {COMMON_TEST_ID_END,                          COMMON_TEST_ACTION_SKIP, NULL},
 };
 

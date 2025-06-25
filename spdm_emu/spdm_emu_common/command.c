@@ -9,7 +9,7 @@
 /* hack to add MCTP header for PCAP*/
 #include "industry_standard/mctp.h"
 
-uint32_t m_use_transport_layer = SOCKET_TRANSPORT_TYPE_MCTP;
+uint32_t m_use_transport_layer = SOCKET_TRANSPORT_TYPE_XCENA;
 
 uint32_t m_use_tcp_role_inquiry = SOCKET_TCP_NO_ROLE_INQUIRY;
 

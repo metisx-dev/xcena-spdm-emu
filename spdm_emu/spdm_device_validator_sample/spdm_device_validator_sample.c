@@ -31,6 +31,11 @@ bool platform_client_routine(uint16_t port_number)
     size_t response_size;
     libspdm_return_t status;
 
+    if (m_use_transport_layer == SOCKET_TRANSPORT_TYPE_XCENA)
+    {
+        goto test;
+    }
+
     result = init_client(&platform_socket, port_number);
     if (!result) {
 #ifdef _MSC_VER
@@ -62,14 +67,13 @@ bool platform_client_routine(uint16_t port_number)
         }
     }
 
+test:
     /* Do test - begin*/
-
     m_spdm_context = spdm_client_init ();
     spdm_responder_conformance_test (m_spdm_context, &m_spdm_responder_validator_config);
     if (m_spdm_context != NULL) {
         free(m_spdm_context);
     }
-
     /* Do test - end*/
 
 done:

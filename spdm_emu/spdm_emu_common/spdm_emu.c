@@ -205,7 +205,8 @@ value_string_entry_t m_transport_value_string_table[] = {
     { SOCKET_TRANSPORT_TYPE_NONE, "NONE"},
     { SOCKET_TRANSPORT_TYPE_MCTP, "MCTP" },
     { SOCKET_TRANSPORT_TYPE_PCI_DOE, "PCI_DOE" },
-    { SOCKET_TRANSPORT_TYPE_TCP, "TCP"}
+    { SOCKET_TRANSPORT_TYPE_TCP, "TCP"},
+    { SOCKET_TRANSPORT_TYPE_XCENA, "XCENA"}
 };
 
 value_string_entry_t m_tcp_subtype_string_table[] = {

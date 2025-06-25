@@ -636,6 +636,7 @@ endif()
     add_subdirectory(${LIBSPDM_DIR}/os_stub/spdm_crypt_ext_lib out/spdm_crypt_ext_lib.out)
 
     add_subdirectory(library/spdm_transport_none_lib)
+    add_subdirectory(library/spdm_transport_xcena_lib)
     add_subdirectory(library/mctp_requester_lib)
     add_subdirectory(library/mctp_responder_lib)
     add_subdirectory(library/pci_doe_requester_lib)

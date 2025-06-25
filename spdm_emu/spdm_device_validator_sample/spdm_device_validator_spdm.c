@@ -10,6 +10,8 @@ void *m_spdm_context;
 void *m_scratch_buffer;
 SOCKET m_socket;
 
+extern FILE *m_log_file;
+
 bool communicate_platform_data(SOCKET socket, uint32_t command,
                                const uint8_t *send_buffer, size_t bytes_to_send,
                                uint32_t *response,
@@ -90,6 +92,108 @@ libspdm_return_t spdm_device_receive_message(void *spdm_context,
     return LIBSPDM_STATUS_SUCCESS;
 }
 
+#define SPDM_CMD "cmtest data"
+#define SPDM_PAYLOAD_PATH "/workspace/spdm_payload/"
+#define SPDM_FLOW_ID 100
+#define SPDM_SEND_PAYLOAD "spdm-send-"
+#define SPDM_RECV_PAYLOAD "spdm-recv-"
+
+static int spdm_cmd_idx = 0;
+extern FILE *m_log_file;
+
+static void print_payload(const char *payload, size_t size, bool is_send)
+{
+    const uint32_t header_size = 12;
+
+    if (size < header_size) {
+        return;
+    }
+
+    uint8_t* actual_payload = (uint8_t*)payload + header_size;
+    uint32_t actual_size = size - header_size;
+
+    fprintf(m_log_file, "%s:\n", is_send ? "send-transport" : "recv-transport");
+    for (size_t i = 0; i < actual_size; i++) {
+        fprintf(m_log_file, "%02X ", actual_payload[i]);
+        if (i % 16 == 15) {
+            fprintf(m_log_file, "\n");
+        }
+    }
+    fprintf(m_log_file, "\n");
+}
+
+libspdm_return_t spdm_xcena_send_message(void *spdm_context,
+                                         size_t request_size, const void *request,
+                                         uint64_t timeout)
+{
+    char cmd[1024];
+
+    print_payload(request, request_size, true);
+
+    sprintf(cmd, "%s%s%d", SPDM_PAYLOAD_PATH, SPDM_SEND_PAYLOAD, spdm_cmd_idx);
+
+    FILE* fp = fopen(cmd, "wb");  // 바이너리 모드로 열기
+    if (!fp) {
+        return LIBSPDM_STATUS_SEND_FAIL;
+    }
+
+    fwrite(request, 1, request_size, fp);
+    fclose(fp);
+
+    system("sleep 0.001");
+
+    sprintf(cmd, "%s -f%d %s%s%d -t 1000000000 > %s%s%d", 
+            SPDM_CMD, SPDM_FLOW_ID,
+            SPDM_PAYLOAD_PATH, SPDM_SEND_PAYLOAD, spdm_cmd_idx,
+            SPDM_PAYLOAD_PATH, SPDM_RECV_PAYLOAD, spdm_cmd_idx);
+    system(cmd);
+
+    return LIBSPDM_STATUS_SUCCESS;
+}
+
+libspdm_return_t spdm_xcena_receive_message(void *spdm_context,
+                                            size_t *response_size,
+                                            void **response,
+                                            uint64_t timeout)
+{
+    char filename[1024];
+
+    sprintf(filename, "%s%s%d", SPDM_PAYLOAD_PATH, SPDM_RECV_PAYLOAD, spdm_cmd_idx);
+
+    int tries = 1000 * 10;  // 100ms 간격으로 체크
+    FILE* fp = NULL;
+    
+    while (tries > 0) {
+        fp = fopen(filename, "rb");
+        if (fp) {
+            break;
+        }
+        system("sleep 0.001");
+        tries--;
+    }
+    
+    if (NULL == fp) {
+        return LIBSPDM_STATUS_RECEIVE_FAIL;
+    }
+
+    spdm_cmd_idx++;
+
+    fseek(fp, 0, SEEK_END);
+    *response_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    if (fread(*response, 1, *response_size, fp) != *response_size) {
+        fclose(fp);
+        return LIBSPDM_STATUS_RECEIVE_FAIL;
+    }
+
+    fclose(fp);
+
+    print_payload(*response, *response_size, false);
+
+    return LIBSPDM_STATUS_SUCCESS;
+}
+
 /**
  * Send and receive an DOE message
  *
@@ -133,8 +237,8 @@ void *spdm_client_init(void)
     spdm_context = m_spdm_context;
     libspdm_init_context(spdm_context);
 
-    libspdm_register_device_io_func(spdm_context, spdm_device_send_message,
-                                    spdm_device_receive_message);
+    libspdm_register_device_io_func(spdm_context, spdm_xcena_send_message,
+                                    spdm_xcena_receive_message);
 
     if (m_use_transport_layer == SOCKET_TRANSPORT_TYPE_MCTP) {
         libspdm_register_transport_layer_func(
@@ -160,6 +264,14 @@ void *spdm_client_init(void)
             0,
             spdm_transport_none_encode_message,
             spdm_transport_none_decode_message);
+    } else if (m_use_transport_layer == SOCKET_TRANSPORT_TYPE_XCENA) {
+        libspdm_register_transport_layer_func(
+            spdm_context,
+            LIBSPDM_MAX_SPDM_MSG_SIZE,
+            LIBSPDM_TRANSPORT_HEADER_SIZE,
+            LIBSPDM_TRANSPORT_TAIL_SIZE,
+            spdm_transport_xcena_encode_message,
+            spdm_transport_xcena_decode_message);
     } else {
         free(m_spdm_context);
         m_spdm_context = NULL;

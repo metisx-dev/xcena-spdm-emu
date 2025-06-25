@@ -1,0 +1,74 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CMRT QEMU Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmrt-zephyr-2.0.61.23/samples/cmrt/fboot/build-dbg/zephyr/zephyr.elf",
+            "args": [],
+            "stopAtEntry": true, // 프로그램이 시작될 때 중단되도록 설정
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false, // 외부 콘솔 사용 안함
+            "MIMode": "gdb",
+            "miDebuggerPath": "/home/mcpark/rt630/cmrt/sdk/bin/riscv32-unknown-elf-gdb", // 절대 경로로 설정
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassemble Next Line",
+                    "text": "set disassemble-next-line on",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Disable compressed breakpoints for RISC-V",
+                    "text": "set riscv use-compressed-breakpoints off",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set substitute path",
+                    "text": "set substitute-path /opt/cmrt-zephyr/ /home/mcpark/cmrt-zephyr-2.0.61.23/",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerServerAddress": "localhost:1234",
+            "serverLaunchTimeout": 10000,
+            "filterStderr": true,
+            "filterStdout": true,
+            "logging": {
+                "engineLogging": true
+            },
+            "visualizerFile": "${workspaceFolder}/.vscode/gdb/zephyr.natvis",
+            "showDisplayString": true,
+            "preLaunchTask": "setup-environment"
+        },
+        {
+            "name": "SPDM Device Validator Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/spdm_device_validator_sample",
+            "args": [
+                "--trans",
+                "XCENA"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb",
+            "preLaunchTask": "build-spdm-validator"
+        }
+    ]
+}

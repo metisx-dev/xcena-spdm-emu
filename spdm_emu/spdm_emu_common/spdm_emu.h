@@ -171,7 +171,7 @@ bool write_bytes(const SOCKET socket, const uint8_t *buffer,
 #endif
 
 #ifndef LIBSPDM_SENDER_BUFFER_SIZE
-#define LIBSPDM_SENDER_BUFFER_SIZE (0x1100 + \
+#define LIBSPDM_SENDER_BUFFER_SIZE (0x1200 + \
                                     LIBSPDM_TRANSPORT_ADDITIONAL_SIZE)
 #endif
 #ifndef LIBSPDM_RECEIVER_BUFFER_SIZE
