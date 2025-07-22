@@ -171,11 +171,11 @@ bool write_bytes(const SOCKET socket, const uint8_t *buffer,
 #endif
 
 #ifndef LIBSPDM_SENDER_BUFFER_SIZE
-#define LIBSPDM_SENDER_BUFFER_SIZE (0x1200 + \
+#define LIBSPDM_SENDER_BUFFER_SIZE (0x1400 + \
                                     LIBSPDM_TRANSPORT_ADDITIONAL_SIZE)
 #endif
 #ifndef LIBSPDM_RECEIVER_BUFFER_SIZE
-#define LIBSPDM_RECEIVER_BUFFER_SIZE (0x1200 + \
+#define LIBSPDM_RECEIVER_BUFFER_SIZE (0x1400 + \
                                       LIBSPDM_TRANSPORT_ADDITIONAL_SIZE)
 #endif
 
@@ -198,7 +198,7 @@ bool write_bytes(const SOCKET socket, const uint8_t *buffer,
  * If chunk is supported, it must be larger than DATA_TRANSFER_SIZE.
  * It matches MaxSPDMmsgSize in SPDM specification. */
 #ifndef LIBSPDM_MAX_SPDM_MSG_SIZE
-#define LIBSPDM_MAX_SPDM_MSG_SIZE 0x1200
+#define LIBSPDM_MAX_SPDM_MSG_SIZE 0x1400
 #endif
 
 /* expose it because the responder/requester may use it to send/receive other message such as DOE discovery */
