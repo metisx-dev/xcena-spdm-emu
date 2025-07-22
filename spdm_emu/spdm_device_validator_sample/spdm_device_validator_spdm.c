@@ -92,7 +92,7 @@ libspdm_return_t spdm_device_receive_message(void *spdm_context,
     return LIBSPDM_STATUS_SUCCESS;
 }
 
-#define SPDM_CMD "cmtest data"
+#define SPDM_CMD "/workspace/spdm_executor.sh"
 #define SPDM_PAYLOAD_PATH "/workspace/spdm_payload/"
 #define SPDM_FLOW_ID 100
 #define SPDM_SEND_PAYLOAD "spdm-send-"
@@ -142,8 +142,8 @@ libspdm_return_t spdm_xcena_send_message(void *spdm_context,
 
     system("sleep 0.001");
 
-    sprintf(cmd, "%s -f%d %s%s%d -t 1000000000 > %s%s%d", 
-            SPDM_CMD, SPDM_FLOW_ID,
+    sprintf(cmd, "%s %s%s%d %s%s%d", 
+            SPDM_CMD,
             SPDM_PAYLOAD_PATH, SPDM_SEND_PAYLOAD, spdm_cmd_idx,
             SPDM_PAYLOAD_PATH, SPDM_RECV_PAYLOAD, spdm_cmd_idx);
     system(cmd);
